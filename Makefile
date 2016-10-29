@@ -3,13 +3,13 @@ OBJ = ${C_SOURCES:.c=.o}
 
 all: os-image
 
-run: all #Having trouble with Bochs 2.6.2 on Fedora (not related to X I believe). Currently just scping image back to my Macbook.
+run: all #Having trouble with Bochs 2.6.2 on Fedora. Currently just scping image back to my Macbook.
 	bochs
 
 os-image: boot/boot_sect.bin kernel.bin 
 	cat $^ > os-image
 
-kernel.bin: kernel/kernel_entry.o ${OBJ}
+kernel.bin: kernel/kernel_entry.o drivers/keyboard_init.o ${OBJ}
 	ld -melf_i386 -o kernel.bin -Ttext 0x1000 $^ --oformat binary
 
 %.o: %.c ${HEADERS}
