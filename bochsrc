@@ -1,4 +1,4 @@
-floppya: 1_44=os-image, status=inserted
+floppya: 1_44=bkp.img, status=inserted
 boot: a
 keyboard: type=mf, serial_delay=200, paste_delay=100000
 keyboard: keymap=x11-pc-us.map

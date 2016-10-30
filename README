@@ -8,3 +8,6 @@ http://arjunsreedharan.org/
 
 To run:
 bochs -q -rc bochsrc_debug 
+
+To create an iso:
+mkisofs -o bkp.iso -V BKP -b bkp.img <directory with only bkp.img>
