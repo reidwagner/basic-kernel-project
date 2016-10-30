@@ -35,5 +35,6 @@ void set_cursor(int cursor);
 void scroll_term(int displacement);
 void move_col(int16_t displacement);
 void move_row(int16_t displacement);
+void term_backspace(void);
 
 #endif

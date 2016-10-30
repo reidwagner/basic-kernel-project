@@ -14,6 +14,42 @@ static size_t term_row;
 static size_t term_col;
 uint16_t* video_memory;
 
+void move_col(int16_t displacement) {
+    term_col += displacement;
+}
+
+void move_row(int16_t displacement) {
+    term_row += displacement;
+}
+
+void set_col(uint16_t c) {
+    term_col = c;
+}
+
+void set_row(uint16_t r) {
+    term_row = r;
+}
+
+int get_cursor(void) {
+    outb(VGA_CONTROL_REG,0xe);
+    int offset = inb(VGA_DATA_REG) << 8;
+    outb(VGA_CONTROL_REG,0xf);
+    offset += inb(VGA_DATA_REG);
+
+    return offset;
+}
+
+void set_cursor(int position) {
+    outb(VGA_CONTROL_REG,0xe);
+    outb(VGA_DATA_REG, (position >> 8) & 0xff);
+    outb(VGA_CONTROL_REG,0xf);
+    outb(VGA_DATA_REG, position & 0xff);
+}
+
+void update_cursor() {
+    set_cursor(term_row*80 + term_col);
+}
+
 void draw_term(void) {
     size_t i,j;
     for (i = 0; i < VGA_WIDTH; i++) {
@@ -21,6 +57,7 @@ void draw_term(void) {
             *(video_memory + (j*VGA_WIDTH+i)) = term[j+top_row][i];
         }
     }
+    update_cursor();
 }
 
 void initialize_term(void) {
@@ -43,45 +80,21 @@ void scroll_term(int displacement) {
     draw_term();
 }
 
+void term_backspace(void) {
+    move_col(-1);
+    term_printchar(' ');
+    move_col(-1);
+}
+
 void term_printchar(char c) {
     if (c == '\n') {
         term_row++;
         term_col = 0;
     } else {       
-        term[term_row][term_col] = vgapair(c,term_color);
-        term_col++;
+        if (c != 0) {
+            term[term_row][term_col] = vgapair(c,term_color);
+            term_col++;
+        }
     }
 }
 
-int get_cursor(void) {
-
-    outb(VGA_CONTROL_REG, 14);
-    int offset = inb(VGA_DATA_REG) << 8;
-    outb(VGA_CONTROL_REG, 15);
-    offset += inb(VGA_DATA_REG);
-
-    return offset;
-}
-
-void set_cursor(int cursor) {
-    outb(VGA_CONTROL_REG, 14);
-    outb(VGA_DATA_REG, cursor >> 8);
-    outb(VGA_CONTROL_REG, 15);
-    outb(VGA_DATA_REG, cursor & 0xff);
-}
-
-void move_col(int16_t displacement) {
-    term_col += displacement;
-}
-
-void move_row(int16_t displacement) {
-    term_row += displacement;
-}
-
-void set_col(uint16_t c) {
-    term_col = c;
-}
-
-void set_row(uint16_t r) {
-    term_row = r;
-}
