@@ -3,8 +3,8 @@ OBJ = ${C_SOURCES:.c=.o}
 
 all: bkp.img
 
-run: all #Having trouble with Bochs 2.6.2 on Fedora. Currently just scping image back to my Macbook.
-	bochs
+run: all
+	qemu-system-i386 -drive file=bkp.img,index=0,if=floppy,format=raw
 
 bkp.img: boot/boot_sect.bin kernel.bin
 	cat $^ > bkp.img

@@ -7,7 +7,7 @@ http://www.brokenthorn.com/Resources/OSDevIndex.html
 http://arjunsreedharan.org/
 
 To run:
-bochs -q -rc bochsrc_debug 
+make run
 
 To create an iso:
 mkisofs -o bkp.iso -V BKP -b bkp.img <directory with only bkp.img>
