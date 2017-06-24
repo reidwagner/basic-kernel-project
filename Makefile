@@ -25,5 +25,5 @@ kernel.bin: kernel/kernel_entry.o drivers/keyboard_init.o ${OBJ}
 	nasm $< -f bin -I 'lib/' -I 'boot/' -o $@ 
 
 clean: 
-	rm -f *.bin bkp.img
+	rm -f *.bin boot/*.bin bkp.img
 	rm -f kernel/*.o boot/*.o drivers/*.o lib/*.o
