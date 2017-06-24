@@ -1,12 +1,13 @@
 [bits 32]
 
 VIDEO_MEMORY equ 0xb8000
+VIDEO_MEMORY_START_OFF equ 0x140
 WHITE_ON_BLACK equ 0x0f
 
 print_string_pm:
     pusha
     mov edx, VIDEO_MEMORY
- ;   mov dword [0xb8000], 0x07690748
+    add edx, VIDEO_MEMORY_START_OFF
 
 print_string_pm_loop:
     mov al, [ebx]
@@ -23,6 +24,5 @@ print_string_pm_loop:
     jmp print_string_pm_loop
 
 print_string_pm_done:
-    ;mov dword [0xb8000], 0x07690748
     popa
     ret

@@ -4,6 +4,8 @@
 #define VGA_CONTROL_REG 0x3D4
 #define VGA_DATA_REG 0x3D5
 
+#define TERM_ROW_INIT 3
+
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
 
@@ -52,9 +54,11 @@ void update_cursor() {
 
 void draw_term(void) {
     size_t i,j;
+    uint16_t *tmemloc;
     for (i = 0; i < VGA_WIDTH; i++) {
         for (j = 0; j < VGA_HEIGHT; j++) {
-            *(video_memory + (j*VGA_WIDTH+i)) = term[j+top_row][i];
+            tmemloc = video_memory + (j*VGA_WIDTH+i);
+            *tmemloc = term[j+top_row][i];
         }
     }
     update_cursor();
@@ -63,13 +67,21 @@ void draw_term(void) {
 void initialize_term(void) {
     video_memory = (uint16_t*) 0xb8000;
     top_row = 0;
-    term_row = 0;
+    term_row = TERM_ROW_INIT;
     term_col = 0;
     term_color = colorpair(VGA_COLOR_WHITE,VGA_COLOR_BLACK);
     size_t i,j;
+    uint16_t *tmemloc;
     for (i = 0; i < VGA_WIDTH; i++) {
         for (j = 0; j < VGA_HEIGHT; j++) {
-            term[j][i] = vgapair(' ',colorpair(VGA_COLOR_WHITE,VGA_COLOR_BLACK));
+            tmemloc = video_memory + (j*VGA_WIDTH+i);
+            uint16_t wbpair = vgapair(' ',colorpair(VGA_COLOR_WHITE,VGA_COLOR_BLACK));
+            term[j][i] = wbpair;
+            if ((*tmemloc) == wbpair) {
+                *tmemloc = term[j+top_row][i];
+            } else {
+                term[j+top_row][i] = *tmemloc;
+            }
         }
     }
     draw_term();

@@ -1,4 +1,3 @@
-
 print_string:
     pusha
     loop:
@@ -9,9 +8,10 @@ print_string:
         int 0x10
         add bx, 1
         jmp loop
-
     end:
-        ; mov al, 0x45
+        mov al, 0x0a
+        int 0x10
+        mov al, 0x0d
         int 0x10
         popa
         ret
