@@ -3,8 +3,11 @@ OBJ = ${C_SOURCES:.c=.o}
 
 all: bkp.img
 
-run: all
+qemu: all
 	qemu-system-i386 -drive file=bkp.img,index=0,if=floppy,format=raw
+
+curses: all
+	qemu-system-i386 -curses -drive file=bkp.img,index=0,if=floppy,format=raw
 
 bkp.img: boot/boot_sect.bin kernel.bin
 	cat $^ > bkp.img
