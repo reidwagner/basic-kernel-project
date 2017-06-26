@@ -9,6 +9,9 @@ qemu: all
 curses: all
 	qemu-system-i386 -curses -boot order=a -drive file=bkp.img,index=0,if=floppy,format=raw
 
+bochs: all
+	bochs -q
+
 bkp.img: boot/boot_sect.bin kernel.bin
 	cat $^ > bkp.img
 
